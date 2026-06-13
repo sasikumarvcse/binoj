@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+<title>Binoj Chathampuriydam — Senior Officer, Battery Assembly</title>
+
+<style>
+  :root{
+    --bg:#0B0E11;
+    --panel:#13181D;
+    --panel-2:#181F26;
+    --line:rgba(255,255,255,0.07);
+    --amber:#F4A623;
+    --amber-dim:rgba(244,166,35,0.15);
+    --green:#3DDC97;
+    --text:#E8ECEF;
+    --muted:#6B7785;
+    --mono: 'Times New Roman', Times, serif;
+    --disp: 'Times New Roman', Times, serif;
+    --body: 'Times New Roman', Times, serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth; overflow-x:hidden; width:100%;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:var(--body);
+    line-height:1.6;
+    overflow-x:hidden;
+    width:100%;
+    max-width:100vw;
+    font-size:18px;
+  }
+  ::selection{background:var(--amber);color:#0B0E11;}
+  ::-webkit-scrollbar{width:8px;}
+  ::-webkit-scrollbar-track{background:var(--bg);}
+  ::-webkit-scrollbar-thumb{background:var(--amber-dim);border-radius:4px;}
+
+  .conveyor{
+    position:fixed; top:0; left:0; right:0; height:4px;
+    background:var(--panel); z-index:1000;
+    border-bottom:1px solid var(--line);
+  }
+  .conveyor-fill{
+    height:100%; width:0%;
+    background:linear-gradient(90deg,var(--amber),var(--green));
+    position:relative;
+    transition:width .1s linear;
+  }
+  .conveyor-cell{
+    position:absolute; right:-9px; top:-7px;
+    width:18px; height:18px; border-radius:3px;
+    background:var(--amber);
+    box-shadow:0 0 12px var(--amber), 0 0 24px var(--amber-dim);
+    display:flex; align-items:center; justify-content:center;
+    font-size:9px; font-weight:700; color:#0B0E11; font-family:var(--mono);
+  }
+
+  nav{
+    position:fixed; top:4px; left:0; right:0; z-index:999;
+    backdrop-filter:blur(16px) saturate(160%);
+    background:rgba(11,14,17,0.65);
+    border-bottom:1px solid var(--line);
+  }
+  .nav-inner{
+    max-width:1240px; margin:0 auto; padding:18px 32px;
+    display:flex; justify-content:space-between; align-items:center;
+  }
+  .logo{
+    font-family:var(--disp); font-weight:700; font-size:1.15rem; letter-spacing:0.02em;
+    display:flex; align-items:center; gap:10px;
+  }
+  .logo-mark{
+    width:30px; height:30px; border:2px solid var(--amber); border-radius:5px;
+    position:relative; flex-shrink:0;
+  }
+  .logo-mark::before{
+    content:''; position:absolute; top:3px; left:3px; right:3px; bottom:3px;
+    background:var(--amber); border-radius:2px;
+    animation:cellPulse 2.4s ease-in-out infinite;
+  }
+  .logo-mark::after{
+    content:''; position:absolute; top:-5px; left:50%; transform:translateX(-50%);
+    width:8px; height:3px; background:var(--amber); border-radius:1px;
+  }
+  @keyframes cellPulse{0%,100%{opacity:0.35;} 50%{opacity:1;}}
+  .nav-links{display:flex; gap:32px; list-style:none; font-size:0.92rem; font-weight:500;}
+  .nav-links a{color:var(--muted); text-decoration:none; position:relative; transition:color .25s; padding:4px 0;}
+  .nav-links a::after{content:''; position:absolute; bottom:-4px; left:0; width:0; height:2px; background:var(--amber); transition:width .25s;}
+  .nav-links a:hover, .nav-links a:focus-visible{color:var(--text);}
+  .nav-links a:hover::after, .nav-links a:focus-visible::after{width:100%;}
+  .nav-cta{
+    font-family:var(--mono); font-size:0.78rem; font-weight:500;
+    border:1px solid var(--amber); color:var(--amber); padding:9px 18px;
+    border-radius:4px; text-decoration:none; letter-spacing:0.04em;
+    transition:all .25s; cursor:pointer; background:none;
+  }
+  .nav-cta:hover{background:var(--amber); color:#0B0E11; box-shadow:0 0 24px var(--amber-dim);}
+  .hamburger{display:none; flex-direction:column; gap:5px; cursor:pointer; background:none; border:none; padding:6px;}
+  .hamburger span{width:24px; height:2px; background:var(--text); border-radius:1px; transition:.25s;}
+
+  section{max-width:1240px; margin:0 auto; padding:120px 32px; position:relative;}
+  .station{
+    font-family:var(--mono); color:var(--amber); font-size:0.8rem;
+    letter-spacing:0.1em; text-transform:uppercase; margin-bottom:14px;
+    display:flex; align-items:center; gap:12px;
+  }
+  .station::before{content:''; width:24px; height:1px; background:var(--amber);}
+  h2.section-title{
+    font-family:var(--disp); font-weight:700; font-size:clamp(1.8rem,4vw,2.8rem);
+    margin-bottom:48px; letter-spacing:normal;
+  }
+  .reveal{opacity:0; transform:translateY(28px); transition:opacity .7s cubic-bezier(.2,.7,.3,1), transform .7s cubic-bezier(.2,.7,.3,1);}
+  .reveal.visible{opacity:1; transform:translateY(0);}
+
+  .hero{min-height:100vh; display:flex; align-items:center; padding-top:140px; position:relative;}
+  .hero-bg{
+    position:absolute; inset:0; z-index:-1; overflow:hidden;
+    background:
+      radial-gradient(ellipse 800px 500px at 80% 20%, rgba(244,166,35,0.08), transparent 60%),
+      radial-gradient(ellipse 600px 400px at 10% 80%, rgba(61,220,151,0.05), transparent 60%);
+  }
+  .hero-bg .grid-lines{
+    position:absolute; inset:0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+    background-size:48px 48px;
+    mask-image:linear-gradient(to bottom, transparent, black 20%, black 80%, transparent);
+  }
+  .hero-grid{display:grid; grid-template-columns:1.15fr 0.85fr; gap:64px; align-items:center; width:100%;}
+  .badge{
+    display:inline-flex; align-items:center; gap:10px;
+    font-family:var(--mono); font-size:0.78rem; color:var(--green);
+    border:1px solid rgba(61,220,151,0.3); background:rgba(61,220,151,0.06);
+    padding:7px 14px; border-radius:100px; margin-bottom:28px; letter-spacing:0.04em;
+  }
+  .badge .dot{width:7px; height:7px; border-radius:50%; background:var(--green); box-shadow:0 0 8px var(--green); animation:pulseDot 1.8s ease-in-out infinite;}
+  @keyframes pulseDot{0%,100%{opacity:1;} 50%{opacity:0.3;}}
+  .hero h1{
+    font-family:var(--disp); font-weight:700; line-height:1.05;
+    font-size:clamp(2.6rem,6vw,4.6rem); letter-spacing:normal; margin-bottom:18px;
+  }
+  .hero h1 .accent{color:var(--amber); position:relative;}
+  .hero .role{
+    font-family:var(--mono); font-size:clamp(0.95rem,1.6vw,1.15rem); color:var(--muted);
+    margin-bottom:28px; letter-spacing:0.02em;
+  }
+  .hero .role .sep{color:var(--amber); margin:0 8px;}
+  .hero p.intro{font-size:1.05rem; color:#B6BFC8; max-width:520px; margin-bottom:40px;}
+  .hero-ctas{display:flex; gap:16px; flex-wrap:wrap;}
+  .btn{
+    font-family:var(--disp); font-weight:600; font-size:0.95rem;
+    padding:15px 30px; border-radius:6px; text-decoration:none;
+    display:inline-flex; align-items:center; gap:10px; transition:all .3s cubic-bezier(.2,.8,.3,1);
+    border:1px solid transparent; cursor:pointer;
+  }
+  .btn-primary{background:var(--amber); color:#0B0E11;}
+  .btn-primary:hover{transform:translateY(-3px); box-shadow:0 14px 30px -10px rgba(244,166,35,0.5);}
+  .btn-secondary{border-color:var(--line); color:var(--text); background:rgba(255,255,255,0.02);}
+  .btn-secondary:hover{border-color:var(--amber); color:var(--amber); transform:translateY(-3px);}
+
+  .cell-stage{perspective:1100px; display:flex; justify-content:center; align-items:center; height:480px; position:relative; overflow:hidden; max-width:100%;}
+  .cell-3d{width:220px; height:340px; position:relative; transform-style:preserve-3d; animation:rotateCell 14s linear infinite;}
+  @keyframes rotateCell{from{transform:rotateY(0deg) rotateX(-8deg);} to{transform:rotateY(360deg) rotateX(-8deg);}}
+  .cell-face{position:absolute; inset:0; border-radius:14px; border:1px solid rgba(255,255,255,0.12); backface-visibility:hidden;}
+  .cell-front{
+    background:linear-gradient(135deg, var(--panel-2), var(--panel));
+    transform:translateZ(110px);
+    overflow:hidden;
+  }
+  .cell-back{background:var(--panel); transform:translateZ(-110px) rotateY(180deg); overflow:hidden;}
+  .cell-right{width:220px; height:340px; left:auto; right:-110px; background:linear-gradient(90deg, var(--panel), #0d1115); transform:rotateY(90deg) translateZ(110px); overflow:hidden;}
+  .cell-left{width:220px; height:340px; right:auto; left:-110px; background:linear-gradient(90deg, #0d1115, var(--panel)); transform:rotateY(-90deg) translateZ(110px); overflow:hidden;}
+  .cell-top{
+    height:60px; top:-60px; background:linear-gradient(135deg,#1d262e,var(--panel-2));
+    transform:rotateX(90deg) translateZ(60px);
+    display:flex; align-items:center; justify-content:center; gap:14px;
+  }
+  .cell-bottom{height:60px; bottom:-60px; background:linear-gradient(135deg,var(--panel),#0a0d10); transform:rotateX(-90deg) translateZ(60px);}
+
+  .cell-face img{
+    position:absolute; inset:0;
+    width:100%; height:100%;
+    object-fit:cover;
+    object-position:center;
+    display:block;
+  }
+
+  .modal-overlay{
+    position:fixed; inset:0; background:rgba(11,14,17,0.75); backdrop-filter:blur(6px);
+    z-index:1100; display:flex; align-items:center; justify-content:center;
+    opacity:0; pointer-events:none; transition:opacity .3s; padding:24px;
+  }
+  .modal-overlay.open{opacity:1; pointer-events:all;}
+  .modal-card{
+    background:var(--panel); border:1px solid var(--line); border-radius:14px;
+    padding:40px; max-width:420px; width:100%; text-align:center;
+    transform:translateY(20px) scale(0.97); transition:transform .35s cubic-bezier(.2,.8,.3,1);
+    position:relative;
+  }
+  .modal-overlay.open .modal-card{transform:translateY(0) scale(1);}
+  .modal-close{
+    position:absolute; top:16px; right:16px; width:34px; height:34px; border-radius:50%;
+    border:1px solid var(--line); background:var(--panel-2); color:var(--text);
+    display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:1.1rem; transition:.25s;
+  }
+  .modal-close:hover{border-color:var(--amber); color:var(--amber);}
+  .modal-icon{
+    width:60px; height:60px; border-radius:14px; background:var(--amber-dim); color:var(--amber);
+    display:flex; align-items:center; justify-content:center; margin:0 auto 20px; font-size:1.6rem;
+  }
+  .modal-card h3{font-family:var(--disp); font-size:1.4rem; margin-bottom:10px; font-weight:700;}
+  .modal-card p{color:var(--muted); font-size:0.95rem; margin-bottom:28px;}
+  .modal-actions{display:flex; flex-direction:column; gap:14px;}
+  .modal-actions .btn{justify-content:center; width:100%;}
+
+  .stats-strip{
+    display:grid; grid-template-columns:repeat(4,1fr); gap:1px;
+    background:var(--line); border:1px solid var(--line); border-radius:10px;
+    overflow:hidden; margin-top:-40px;
+  }
+  .stat-box{background:var(--panel); padding:28px 24px; text-align:center;}
+  .stat-box .num{
+    font-family:var(--mono); font-weight:700; font-size:clamp(1.6rem,3vw,2.2rem); color:var(--amber);
+    display:block; margin-bottom:6px;
+  }
+  .stat-box .lbl{font-size:0.8rem; color:var(--muted); letter-spacing:0.04em;}
+
+  .about-grid{display:grid; grid-template-columns:1fr 1.3fr; gap:60px; align-items:start;}
+  .about-card{background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:32px; transition:transform .3s, border-color .3s;}
+  .about-card:hover{transform:translateY(-4px); border-color:rgba(244,166,35,0.25);}
+  .id-panel{background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:28px; font-family:var(--mono); font-size:0.85rem;}
+  .id-panel .id-row{display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid var(--line);}
+  .id-panel .id-row:last-child{border-bottom:none;}
+  .id-panel .id-key{color:var(--muted);}
+  .id-panel .id-val{color:var(--text); text-align:right;}
+  .about-grid p{color:#B6BFC8; margin-bottom:18px; font-size:1.02rem;}
+  .skill-tags{display:flex; flex-wrap:wrap; gap:10px; margin-top:24px;}
+  .skill-tag{
+    font-family:var(--mono); font-size:0.78rem; padding:8px 14px;
+    background:var(--panel-2); border:1px solid var(--line); border-radius:5px;
+    color:#B6BFC8; transition:all .25s;
+  }
+  .skill-tag:hover{border-color:var(--amber); color:var(--amber); transform:translateY(-2px);}
+
+  .timeline{position:relative; padding-left:48px;}
+  .timeline::before{content:''; position:absolute; left:9px; top:8px; bottom:8px; width:2px; background:linear-gradient(180deg, var(--amber), var(--line) 90%);}
+  .tl-item{position:relative; padding-bottom:56px;}
+  .tl-item:last-child{padding-bottom:0;}
+  .tl-dot{
+    position:absolute; left:-48px; top:6px; width:20px; height:20px; border-radius:50%;
+    background:var(--bg); border:2px solid var(--amber);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .tl-dot::after{content:''; width:8px; height:8px; border-radius:50%; background:var(--amber);}
+  .tl-card{background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:28px 32px; transition:border-color .3s, transform .3s;}
+  .tl-card:hover{border-color:rgba(244,166,35,0.3); transform:translateX(6px);}
+  .tl-head{display:flex; flex-wrap:wrap; justify-content:space-between; align-items:baseline; gap:8px; margin-bottom:6px;}
+  .tl-role{font-family:var(--disp); font-weight:700; font-size:1.25rem;}
+  .tl-date{font-family:var(--mono); font-size:0.78rem; color:var(--amber); white-space:nowrap;}
+  .tl-company{color:var(--muted); font-size:0.92rem; margin-bottom:16px;}
+  .tl-list{list-style:none; display:grid; gap:10px;}
+  .tl-list li{padding-left:22px; position:relative; font-size:0.94rem; color:#B6BFC8;}
+  .tl-list li::before{content:'▸'; position:absolute; left:0; color:var(--green); font-size:0.8rem; top:2px;}
+
+  .skills-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:20px;}
+  .skill-card{background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:26px; transition:all .3s;}
+  .skill-card:hover{border-color:rgba(244,166,35,0.3); box-shadow:0 12px 30px -16px rgba(244,166,35,0.3); transform:translateY(-4px);}
+  .skill-card-top{display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;}
+  .skill-name{font-family:var(--disp); font-weight:600; font-size:1.02rem;}
+  .skill-pct{font-family:var(--mono); font-size:0.85rem; color:var(--amber);}
+  .gauge{height:6px; background:var(--panel-2); border-radius:3px; overflow:hidden;}
+  .gauge-fill{height:100%; border-radius:3px; background:linear-gradient(90deg,var(--green),var(--amber)); width:0%; transition:width 1.4s cubic-bezier(.2,.8,.3,1);}
+  .skill-card.visible .gauge-fill{width:var(--pct);}
+
+  .ach-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:20px;}
+  .ach-card{
+    background:linear-gradient(160deg, var(--panel), var(--panel-2));
+    border:1px solid var(--line); border-radius:12px; padding:28px;
+    position:relative; overflow:hidden; transition:transform .3s, border-color .3s;
+  }
+  .ach-card:hover{transform:translateY(-5px); border-color:rgba(244,166,35,0.3);}
+  .ach-card::before{
+    content:''; position:absolute; top:-40%; right:-40%; width:140%; height:140%;
+    background:radial-gradient(circle, rgba(244,166,35,0.07), transparent 60%);
+    transition:opacity .3s; opacity:0;
+  }
+  .ach-card:hover::before{opacity:1;}
+  .ach-icon{
+    width:42px; height:42px; border-radius:8px; background:var(--amber-dim);
+    color:var(--amber); display:flex; align-items:center; justify-content:center;
+    font-family:var(--mono); font-weight:700; margin-bottom:18px; font-size:1rem;
+  }
+  .ach-card h3{font-family:var(--disp); font-size:1.05rem; margin-bottom:10px; font-weight:600;}
+  .ach-card p{color:var(--muted); font-size:0.92rem;}
+
+  .cert-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:16px;}
+  .cert-card{background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:22px; display:flex; flex-direction:column; gap:6px; transition:.3s;}
+  .cert-card:hover{border-color:var(--green); box-shadow:0 0 0 1px var(--green) inset;}
+  .cert-card .cert-name{font-family:var(--disp); font-weight:600; font-size:0.98rem;}
+  .cert-card .cert-date{font-family:var(--mono); font-size:0.78rem; color:var(--green);}
+
+  .edu-lang-grid{display:grid; grid-template-columns:1.4fr 1fr; gap:32px;}
+  .edu-item{border-left:2px solid var(--line); padding:4px 0 22px 20px; position:relative;}
+  .edu-item::before{content:''; position:absolute; left:-5px; top:4px; width:8px; height:8px; border-radius:50%; background:var(--amber);}
+  .edu-item .edu-title{font-family:var(--disp); font-weight:600; font-size:1.02rem; margin-bottom:4px;}
+  .edu-item .edu-sub{color:var(--muted); font-size:0.88rem;}
+  .edu-item .edu-grade{font-family:var(--mono); color:var(--green); font-size:0.85rem; margin-top:4px;}
+  .lang-card{background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:28px;}
+  .lang-list{display:flex; flex-wrap:wrap; gap:12px; margin-top:6px;}
+  .lang-chip{font-family:var(--mono); font-size:0.85rem; padding:10px 16px; border-radius:6px; background:var(--panel-2); border:1px solid var(--line); color:#B6BFC8;}
+
+  /* ===== GALLERY (3 PHOTO CARDS) ===== */
+  .gallery-grid{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:24px;
+  }
+  .gallery-card{
+    width:100%;
+    aspect-ratio:1 / 1;          /* keeps all 3 cards perfectly square & identical */
+    border-radius:12px;
+    overflow:hidden;
+    border:1px solid var(--line);
+    background:var(--panel-2);
+    position:relative;
+    transition:transform .3s, border-color .3s;
+  }
+  .gallery-card:hover{transform:translateY(-4px); border-color:var(--amber);}
+  .gallery-card img{
+    width:100%;
+    height:100%;
+    object-fit:cover;           /* fills the card, crops excess */
+    object-position:center;     /* change to 'center top' if faces get cropped */
+    display:block;
+  }
+  @media (max-width:760px){
+    .gallery-grid{grid-template-columns:1fr; gap:16px;}
+  }
+
+  .contact-grid{display:grid; grid-template-columns:1fr 1.2fr; gap:60px; align-items:start;}
+  .contact-info-item{display:flex; align-items:center; gap:16px; margin-bottom:24px;}
+  .contact-icon{
+    width:46px; height:46px; border-radius:8px; background:var(--panel-2);
+    border:1px solid var(--line); display:flex; align-items:center; justify-content:center;
+    color:var(--amber); flex-shrink:0;
+  }
+  .contact-info-item a, .contact-info-item span{color:var(--text); text-decoration:none; font-size:0.98rem;}
+  .contact-info-item .lbl{display:block; font-family:var(--mono); font-size:0.74rem; color:var(--muted); letter-spacing:0.08em; margin-bottom:3px;}
+  .form-card{background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:36px;}
+  .field{margin-bottom:24px; position:relative;}
+  .field input, .field textarea{
+    width:100%; background:var(--panel-2); border:1px solid var(--line); border-radius:6px;
+    padding:16px 14px; color:var(--text); font-family:var(--body); font-size:0.95rem;
+    transition:border-color .25s; resize:vertical;
+  }
+  .field input:focus, .field textarea:focus{outline:none; border-color:var(--amber);}
+  .field label{
+    position:absolute; left:14px; top:16px; color:var(--muted); font-size:0.95rem;
+    transition:all .2s; pointer-events:none; background:var(--panel-2); padding:0 4px;
+  }
+  .field input:focus + label, .field input:not(:placeholder-shown) + label,
+  .field textarea:focus + label, .field textarea:not(:placeholder-shown) + label{
+    top:-9px; font-size:0.74rem; color:var(--amber);
+  }
+  .form-msg{margin-top:16px; font-family:var(--mono); font-size:0.85rem; color:var(--green); opacity:0; transition:opacity .4s; display:flex; align-items:center; gap:8px;}
+  .form-msg.show{opacity:1;}
+
+  footer{
+    border-top:1px solid var(--line); padding:48px 32px;
+    display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:20px;
+    max-width:1240px; margin:0 auto; color:var(--muted); font-size:0.88rem;
+  }
+  .footer-links{display:flex; gap:24px; list-style:none;}
+  .footer-links a{color:var(--muted); text-decoration:none; transition:.2s;}
+  .footer-links a:hover{color:var(--amber);}
+  .social-row{display:flex; gap:14px;}
+  .social-row a{
+    width:38px; height:38px; border-radius:8px; border:1px solid var(--line);
+    display:flex; align-items:center; justify-content:center; color:var(--text);
+    text-decoration:none; transition:.25s;
+  }
+  .social-row a:hover{border-color:var(--amber); color:var(--amber); transform:translateY(-3px);}
+  .to-top{
+    width:44px; height:44px; border-radius:50%; border:1px solid var(--line); background:var(--panel);
+    color:var(--amber); display:flex; align-items:center; justify-content:center; cursor:pointer; transition:.25s;
+  }
+  .to-top:hover{border-color:var(--amber); transform:translateY(-3px);}
+
+  @media (max-width:980px){
+    .hero-grid{grid-template-columns:1fr; gap:48px;}
+    .cell-stage{height:340px; order:-1;}
+    .stats-strip{grid-template-columns:repeat(2,1fr);}
+    .about-grid, .contact-grid, .edu-lang-grid{grid-template-columns:1fr; gap:32px;}
+  }
+  @media (max-width:760px){
+    .nav-links{
+      position:absolute; top:100%; left:0; right:0; flex-direction:column;
+      background:rgba(11,14,17,0.97); backdrop-filter:blur(20px);
+      padding:24px 32px; gap:18px; border-bottom:1px solid var(--line);
+      transform:translateY(-12px); opacity:0; pointer-events:none; transition:.3s;
+    }
+    .nav-links.open{transform:translateY(0); opacity:1; pointer-events:all;}
+    .hamburger{display:flex;}
+    .nav-cta{display:none;}
+    section{padding:80px 22px;}
+    .stats-strip{grid-template-columns:repeat(2,1fr);}
+    .cell-stage{height:260px;}
+    .cell-3d{width:160px; height:260px;}
+    .cell-right, .cell-left{width:90px;}
+    .cell-left{left:-45px;} .cell-right{right:-45px;}
+    .profile-photo{width:130px; height:130px;}
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important;}
+  }
+  :focus-visible{outline:2px solid var(--amber); outline-offset:3px;}
+</style>
+</head>
+<body>
+
+<div class="conveyor"><div class="conveyor-fill" id="conveyorFill"><div class="conveyor-cell">⚡</div></div></div>
+
+<nav>
+  <div class="nav-inner">
+    <div class="logo"><span class="logo-mark"></span> Binoj C.</div>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#home">Home</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#experience">Experience</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#gallery">Gallery</a></li>
+      <li><a href="#achievements">Achievements</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <a href="#contact" class="nav-cta">GET IN TOUCH</a>
+    <button class="hamburger" id="hamburger" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-bg"><div class="grid-lines"></div></div>
+  <div class="hero-grid">
+    <div>
+      <div class="badge"><span class="dot"></span> AVAILABLE FOR NEW OPPORTUNITIES</div>
+      <h1 class="reveal">Hi, I'm <span class="accent">Binoj</span><br>Chathampuriydam</h1>
+      <div class="role reveal">Senior Officer <span class="sep">/</span> Battery Assembly <span class="sep">/</span> Six Sigma Green Belt</div>
+      <p class="intro reveal">Production engineer with 6+ years driving battery assembly lines from plate preparation to final pack — improving uptime, cutting scrap, and holding quality systems to IATF 16949 standard across high-volume automotive battery plants.</p>
+      <div class="hero-ctas reveal">
+        <a href="#experience" class="btn btn-primary">View Experience</a>
+        <button class="btn btn-secondary" id="resumeBtn" type="button">Resume Details</button>
+      </div>
+    </div>
+    <div class="cell-stage">
+      <div class="cell-3d">
+        <div class="cell-face cell-front">
+          <img src="binoj.jpg" alt="Photo 1">
+        </div>
+        <div class="cell-face cell-back">
+          <img src="binoj.jpg" alt="Photo 2">
+        </div>
+        <div class="cell-face cell-right">
+          <img src="binoj.jpg" alt="Photo 3">
+        </div>
+        <div class="cell-face cell-left">
+          <img src="binoj.jpg" alt="Photo 1">
+        </div>
+        <div class="cell-face cell-top"></div>
+        <div class="cell-face cell-bottom"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS STRIP -->
+<section style="padding-top:0;">
+  <div class="stats-strip reveal">
+    <div class="stat-box"><span class="num">6+</span><span class="lbl">Years in Production</span></div>
+    <div class="stat-box"><span class="num">15%</span><span class="lbl">Productivity Gain</span></div>
+    <div class="stat-box"><span class="num">98%</span><span class="lbl">First Pass Yield</span></div>
+    <div class="stat-box"><span class="num">3</span><span class="lbl">Certifications</span></div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="station">ST-01 / PROFILE</div>
+  <h2 class="section-title reveal">About</h2>
+  <div class="about-grid">
+    <div class="id-panel reveal">
+      <div class="id-row"><span class="id-key">NAME</span><span class="id-val">Binoj Chathampuriydam</span></div>
+      <div class="id-row"><span class="id-key">ROLE</span><span class="id-val">Sr. Officer – Battery Assembly</span></div>
+      <div class="id-row"><span class="id-key">LOCATION</span><span class="id-val">Kottayam, Kerala 686521</span></div>
+      <div class="id-row"><span class="id-key">PHONE</span><span class="id-val">+91 79023 29593</span></div>
+      <div class="id-row"><span class="id-key">EMAIL</span><span class="id-val">binoj50@gmail.com</span></div>
+      <div class="id-row"><span class="id-key">LINKEDIN</span><span class="id-val">https://www.linkedin.com/in/chathampuriydam-binoj-635463149?utm_source=share_via&utm_content=profile&utm_medium=member_android</span></div>
+    </div>
+    <div class="about-card reveal">
+      <p>I'm a dynamic production professional with extensive experience leading battery assembly operations — from plate preparation through final assembly — across India's largest energy and mobility manufacturers.</p>
+      <p>My approach combines structured problem-solving (4W1H, 8D, FMEA) with hands-on TPM and Six Sigma execution. I've improved negative plate uptime from 25% to 65%, modified tooling to eliminate pinhole defects, and led QC Circle initiatives that cut rework and operator fatigue.</p>
+      <p>I'm focused on driving measurable, sustained results — better yield, lower scrap, safer floors — while keeping quality management systems (IATF, OHSAS, EMS) audit-ready year round.</p>
+      <div class="skill-tags">
+        <span class="skill-tag">ISO/TS 16949</span>
+        <span class="skill-tag">IATF 16949</span>
+        <span class="skill-tag">8D Reports</span>
+        <span class="skill-tag">FMEA</span>
+        <span class="skill-tag">Kaizen</span>
+        <span class="skill-tag">TPM</span>
+        <span class="skill-tag">SMED</span>
+        <span class="skill-tag">5S</span>
+        <span class="skill-tag">MES</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+  <div class="station">ST-02 / TIMELINE</div>
+  <h2 class="section-title reveal">Experience</h2>
+  <div class="timeline">
+    <div class="tl-item reveal">
+      <div class="tl-dot"></div>
+      <div class="tl-card">
+        <div class="tl-head">
+          <div class="tl-role">Senior Officer – Battery Assembly</div>
+          <div class="tl-date">NOV 2025 — PRESENT</div>
+        </div>
+        <div class="tl-company">Exide Industries Limited · Hosur, India</div>
+        <ul class="tl-list">
+          <li>Managed assembly operations using PQSDCE methodology — improved productivity by 15%, reduced defects by 20%, maintained 98% FPY and on-time delivery, with zero safety incidents and 10–12% scrap/waste reduction through 5S.</li>
+          <li>Conducted stock reconciliation and inventory planning for BOP, FG, and SIP materials to ensure accurate inventory and uninterrupted production.</li>
+          <li>Maintained quality management systems including IATF, OHSAS, and EMS.</li>
+          <li>Implemented TQM and TPM practices to improve equipment reliability and product quality.</li>
+          <li>Ensured compliance with MES for production tracking and reporting.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="tl-item reveal">
+      <div class="tl-dot"></div>
+      <div class="tl-card">
+        <div class="tl-head">
+          <div class="tl-role">Senior Engineer – Production / Assembly</div>
+          <div class="tl-date">JUL 2019 — NOV 2025</div>
+        </div>
+        <div class="tl-company">Amara Raja Energy & Mobility Ltd. · Chittoor, India — ASBU 4W Flooded Batteries, Plate Preparation & Assembly</div>
+        <ul class="tl-list">
+          <li>Supervised battery production and assembly lines to meet quality and output targets, leading 4 sections as in-charge of PLP/Assembly.</li>
+          <li>Implemented Lean, Kaizen, and Six Sigma for process optimization; ensured IATF 16949 and ISO 9001/14001 compliance.</li>
+          <li>Resolved quality issues using CAPA and 8D methodologies; managed equipment and tooling maintenance to reduce downtime.</li>
+          <li>Tracked KPIs for data-driven improvements; enforced EHS policies, 5S, and workplace safety.</li>
+          <li>Handled customer audits and complaint resolution; implemented MES, traceability, and supported NPI projects.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="station">ST-03 / CAPABILITIES</div>
+  <h2 class="section-title reveal">Skills</h2>
+  <div class="skills-grid">
+    <div class="skill-card reveal" style="--pct:96%">
+      <div class="skill-card-top"><span class="skill-name">Production Planning & Control</span><span class="skill-pct">96%</span></div>
+      <div class="gauge"><div class="gauge-fill"></div></div>
+    </div>
+    <div class="skill-card reveal" style="--pct:94%">
+      <div class="skill-card-top"><span class="skill-name">ISO/TS 16949 & IATF Auditing</span><span class="skill-pct">94%</span></div>
+      <div class="gauge"><div class="gauge-fill"></div></div>
+    </div>
+    <div class="skill-card reveal" style="--pct:92%">
+      <div class="skill-card-top"><span class="skill-name">8D / CAPA / FMEA</span><span class="skill-pct">92%</span></div>
+      <div class="gauge"><div class="gauge-fill"></div></div>
+    </div>
+    <div class="skill-card reveal" style="--pct:90%">
+      <div class="skill-card-top"><span class="skill-name">TPM & Tool Maintenance</span><span class="skill-pct">90%</span></div>
+      <div class="gauge"><div class="gauge-fill"></div></div>
+    </div>
+    <div class="skill-card reveal" style="--pct:93%">
+      <div class="skill-card-top"><span class="skill-name">Kaizen / 4W1H Problem Solving</span><span class="skill-pct">93%</span></div>
+      <div class="gauge"><div class="gauge-fill"></div></div>
+    </div>
+    <div class="skill-card reveal" style="--pct:88%">
+      <div class="skill-card-top"><span class="skill-name">Cycle Time Study & Routing</span><span class="skill-pct">88%</span></div>
+      <div class="gauge"><div class="gauge-fill"></div></div>
+    </div>
+    <div class="skill-card reveal" style="--pct:91%">
+      <div class="skill-card-top"><span class="skill-name">Six Sigma (Green Belt)</span><span class="skill-pct">91%</span></div>
+      <div class="gauge"><div class="gauge-fill"></div></div>
+    </div>
+    <div class="skill-card reveal" style="--pct:87%">
+      <div class="skill-card-top"><span class="skill-name">MES & Traceability Systems</span><span class="skill-pct">87%</span></div>
+      <div class="gauge"><div class="gauge-fill"></div></div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ACHIEVEMENTS -->
+<section id="achievements">
+  <div class="station">ST-05 / RESULTS</div>
+  <h2 class="section-title reveal">Achievements</h2>
+  <div class="ach-grid">
+    <div class="ach-card reveal">
+      <div class="ach-icon">↑65%</div>
+      <h3>Negative Plate Uptime</h3>
+      <p>Improved from 25% to 65% through process optimization, with a parallel reduction in scrap.</p>
+    </div>
+    <div class="ach-card reveal">
+      <div class="ach-icon">6σ</div>
+      <h3>Black Belt Project Support</h3>
+      <p>Supported a Six Sigma Black Belt initiative to reduce positive plate scrap and rejection in 4-wheeler battery assembly.</p>
+    </div>
+    <div class="ach-card reveal">
+      <div class="ach-icon">⬡</div>
+      <h3>Orifice Plate Tooling</h3>
+      <p>Modified tooling to eliminate pinholes, improving active material distribution and battery discharge performance.</p>
+    </div>
+    <div class="ach-card reveal">
+      <div class="ach-icon">SMED</div>
+      <h3>Changeover Time Reduction</h3>
+      <p>Implemented SMED methodology to reduce changeover time and improve overall line productivity.</p>
+    </div>
+    <div class="ach-card reveal">
+      <div class="ach-icon">1.8km</div>
+      <h3>Pasting Line Uptime</h3>
+      <p>Improved stamped grid pasting line uptime by optimizing carrier mat setup and increasing paper roll size from 1000m to 1800m.</p>
+    </div>
+    <div class="ach-card reveal">
+      <div class="ach-icon">QCC</div>
+      <h3>QC Circle Leadership</h3>
+      <p>Led QC Circle initiatives that reduced plate damage, rework, cost, and operator fatigue across the line.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CERTIFICATIONS -->
+<section id="certifications" style="padding-top:0;">
+  <div class="station">ST-06 / CERTIFICATIONS</div>
+  <h2 class="section-title reveal">Certifications</h2>
+  <div class="cert-grid">
+    <div class="cert-card reveal"><span class="cert-name">Six Sigma Green Belt Certified</span><span class="cert-date">APR 2022</span></div>
+    <div class="cert-card reveal"><span class="cert-name">QCC – Quality Control Circles</span><span class="cert-date">APR 2024</span></div>
+    <div class="cert-card reveal"><span class="cert-name">Fundamentals of Capacity Planning & Analysis</span><span class="cert-date">MAY 2025</span></div>
+    <div class="cert-card reveal"><span class="cert-name">Lean Manufacturing A-Z: Operations Management & Six Sigma</span><span class="cert-date">JUN 2026</span></div>
+  </div>
+</section>
+
+<!-- EDUCATION + LANGUAGES -->
+<section id="education">
+  <div class="station">ST-07 / EDUCATION & LANGUAGES</div>
+  <h2 class="section-title reveal">Background</h2>
+  <div class="edu-lang-grid">
+    <div class="reveal">
+      <div class="edu-item">
+        <div class="edu-title">B.Tech, Mechanical Engineering</div>
+        <div class="edu-sub">Avanthi Institute of Engineering and Technology, Visakhapatnam · Apr 2018</div>
+        <div class="edu-grade">First Class Distinction — 7.25 GPA</div>
+      </div>
+      <div class="edu-item">
+        <div class="edu-title">Intermediate</div>
+        <div class="edu-sub">Narayana Junior College, Visakhapatnam · Mar 2014</div>
+        <div class="edu-grade">8.67 GPA</div>
+      </div>
+      <div class="edu-item">
+        <div class="edu-title">Elementary School</div>
+        <div class="edu-sub">Saint Francis School, Visakhapatnam · Mar 2012</div>
+        <div class="edu-grade">9.0 GPA</div>
+      </div>
+    </div>
+    <div class="lang-card reveal">
+      <div class="station" style="margin-bottom:18px;">LANGUAGES</div>
+      <div class="lang-list">
+        <span class="lang-chip">English</span>
+        <span class="lang-chip">Hindi</span>
+        <span class="lang-chip">Tamil</span>
+        <span class="lang-chip">Telugu</span>
+        <span class="lang-chip">Malayalam</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="station">ST-08 / CONTACT</div>
+  <h2 class="section-title reveal">Get In Touch</h2>
+  <div class="contact-grid">
+    <div class="reveal">
+      <p style="color:#B6BFC8; margin-bottom:32px; max-width:380px;">Open to roles in battery, automotive, and energy manufacturing — production, assembly, and quality leadership. Reach out directly or send a message.</p>
+      <div class="contact-info-item">
+        <div class="contact-icon">✉</div>
+        <div><span class="lbl">EMAIL</span><a href="mailto:binoj50@gmail.com">binoj50@gmail.com</a></div>
+      </div>
+      <div class="contact-info-item">
+        <div class="contact-icon">☎</div>
+        <div><span class="lbl">PHONE</span><a href="tel:+917902329593">+91 79023 29593</a></div>
+      </div>
+      <div class="contact-info-item">
+        <div class="contact-icon">⚲</div>
+        <div><span class="lbl">LOCATION</span><span>Kottayam, Kerala 686521, India</span></div>
+      </div>
+    </div>
+    <form class="form-card reveal" id="contactForm">
+      <div class="field">
+        <input type="text" id="cname" placeholder=" " required />
+        <label for="cname">Your Name</label>
+      </div>
+      <div class="field">
+        <input type="email" id="cemail" placeholder=" " required />
+        <label for="cemail">Your Email</label>
+      </div>
+      <div class="field">
+        <input type="text" id="csubject" placeholder=" " required />
+        <label for="csubject">Subject</label>
+      </div>
+      <div class="field">
+        <textarea id="cmessage" rows="4" placeholder=" " required></textarea>
+        <label for="cmessage">Message</label>
+      </div>
+      <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center;">Send Message</button>
+      <div class="form-msg" id="formMsg">✓ Message ready — opening your mail client…</div>
+    </form>
+  </div>
+</section>
+
+<footer>
+  <div>© 2026 Binoj Chathampuriydam. All rights reserved.</div>
+  <ul class="footer-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <div class="social-row">
+    <a href="https://www.linkedin.com/in/chathampuriydam-binoj-635463149?utm_source=share_via&utm_content=profile&utm_medium=member_android" aria-label="LinkedIn" target="_blank" rel="noopener">in</a>
+    <a href="mailto:binoj50@gmail.com" aria-label="Email">✉</a>
+  </div>
+  <button class="to-top" id="toTop" aria-label="Back to top">↑</button>
+</footer>
+
+<!-- RESUME MODAL -->
+<div class="modal-overlay" id="resumeModal">
+  <div class="modal-card">
+    <button class="modal-close" id="modalClose" aria-label="Close">✕</button>
+    <div class="modal-icon">📄</div>
+    <h3>Resume — Binoj Chathampuriydam</h3>
+    <p>Choose how you'd like to access the resume.</p>
+    <div class="modal-actions">
+      <a href="resume.pdf" target="_blank" rel="noopener" class="btn btn-secondary">View Resume</a>
+      <a href="resume.pdf" download="Binoj_Chathampuriydam_Resume.pdf" class="btn btn-primary">Download PDF</a>
+    </div>
+  </div>
+</div>
+
+<script>
+  const fill = document.getElementById('conveyorFill');
+  function updateProgress(){
+    const h = document.documentElement;
+    const pct = (h.scrollTop) / (h.scrollHeight - h.clientHeight) * 100;
+    fill.style.width = pct + '%';
+  }
+  window.addEventListener('scroll', updateProgress);
+  updateProgress();
+
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('visible'); } });
+  }, {threshold:0.15});
+  revealEls.forEach(el=>io.observe(el));
+
+  const hamburger = document.getElementById('hamburger');
+  const navLinks = document.getElementById('navLinks');
+  hamburger.addEventListener('click', ()=>{ navLinks.classList.toggle('open'); });
+  navLinks.querySelectorAll('a').forEach(a=>a.addEventListener('click', ()=>navLinks.classList.remove('open')));
+
+  document.getElementById('toTop').addEventListener('click', ()=>{
+    window.scrollTo({top:0, behavior:'smooth'});
+  });
+
+  const resumeModal = document.getElementById('resumeModal');
+  document.getElementById('resumeBtn').addEventListener('click', ()=> resumeModal.classList.add('open'));
+  document.getElementById('modalClose').addEventListener('click', ()=> resumeModal.classList.remove('open'));
+  resumeModal.addEventListener('click', (e)=>{ if(e.target === resumeModal) resumeModal.classList.remove('open'); });
+  document.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') resumeModal.classList.remove('open'); });
+
+  document.getElementById('contactForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    const name = document.getElementById('cname').value;
+    const email = document.getElementById('cemail').value;
+    const subject = document.getElementById('csubject').value;
+    const message = document.getElementById('cmessage').value;
+    const body = encodeURIComponent(`From: ${name} (${email})\n\n${message}`);
+    const msg = document.getElementById('formMsg');
+    msg.classList.add('show');
+    window.location.href = `mailto:binoj50@gmail.com?subject=${encodeURIComponent(subject)}&body=${body}`;
+    setTimeout(()=>msg.classList.remove('show'), 4000);
+  });
+</script>
+</body>
+</html>
