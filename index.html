@@ -724,6 +724,8 @@
       </div>
     </div>
     
+  
+    
     <!-- Formspree AJAX Form -->
     <div class="form-card reveal">
       <!-- Success Message Container -->
@@ -761,7 +763,10 @@
           <span data-fs-error="message" style="font-size: 0.75rem; color: var(--amber); display: block; margin-top: 5px;"></span>
         </div>
         
-        <button type="submit" data-fs-submit-btn class="btn btn-primary" style="width:100%; justify-content:center;">Send Message</button>
+        <!-- Custom message display area -->
+        <div id="formMsg" style="margin-top: 16px; font-family: var(--mono); font-size: 0.85rem; opacity: 0; transition: opacity 0.4s; text-align: center;"></div>
+        
+        <button type="submit" data-fs-submit-btn class="btn btn-primary" style="width:100%; justify-content:center; margin-top: 10px;">Send Message</button>
       </form>
     </div>
   </div>
@@ -826,9 +831,62 @@
   resumeModal.addEventListener('click', (e)=>{ if(e.target === resumeModal) resumeModal.classList.remove('open'); });
   document.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') resumeModal.classList.remove('open'); });
 
-  // Formspree AJAX Integration
+  // Formspree AJAX Integration with custom success/error handling
   window.formspree = window.formspree || function () { (formspree.q = formspree.q || []).push(arguments); };
-  formspree('initForm', { formElement: '#contact-form', formId: 'mojzprnz' });
+  
+  formspree('initForm', { 
+    formElement: '#contact-form', 
+    formId: 'mojzprnz',
+    onSuccess: function() {
+      // Show success message
+      const successDiv = document.querySelector('[data-fs-success]');
+      if (successDiv) {
+        successDiv.style.display = 'block';
+        setTimeout(() => {
+          successDiv.style.display = 'none';
+        }, 5000);
+      }
+      
+      // Clear all form fields
+      const form = document.getElementById('contact-form');
+      if (form) {
+        form.reset();
+      }
+      
+      // Show custom message
+      const formMsg = document.getElementById('formMsg');
+      if (formMsg) {
+        formMsg.textContent = '✓ Message sent successfully! I\'ll get back to you soon.';
+        formMsg.style.color = '#3DDC97';
+        formMsg.style.opacity = '1';
+        setTimeout(() => {
+          formMsg.style.opacity = '0';
+        }, 5000);
+      }
+    },
+    onError: function(error) {
+      // Show error message
+      const errorDiv = document.querySelector('[data-fs-error]');
+      if (errorDiv) {
+        errorDiv.style.display = 'block';
+        setTimeout(() => {
+          errorDiv.style.display = 'none';
+        }, 5000);
+      }
+      
+      // Show custom error message
+      const formMsg = document.getElementById('formMsg');
+      if (formMsg) {
+        formMsg.textContent = '❌ Failed to send. Please email directly: binoj50@gmail.com';
+        formMsg.style.color = '#F4A623';
+        formMsg.style.opacity = '1';
+        setTimeout(() => {
+          formMsg.style.opacity = '0';
+        }, 5000);
+      }
+      console.error('Formspree error:', error);
+    }
+  });
 </script>
 
 <!-- Formspree AJAX Library -->
