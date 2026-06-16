@@ -37,6 +37,149 @@
   ::-webkit-scrollbar-track{background:var(--bg);}
   ::-webkit-scrollbar-thumb{background:var(--amber-dim);border-radius:4px;}
 
+  /* ============================================================
+     INTRO ANIMATION OVERLAY
+  ============================================================ */
+  #intro-overlay{
+    position:fixed; inset:0; z-index:9999;
+    background:var(--bg);
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    overflow:hidden;
+  }
+  #intro-overlay.hidden{
+    opacity:0; pointer-events:none;
+    transition:opacity 0.6s ease 0.2s;
+  }
+
+  /* Circuit grid background in overlay */
+  .intro-grid{
+    position:absolute; inset:0;
+    background-image:
+      linear-gradient(rgba(244,166,35,0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(244,166,35,0.06) 1px, transparent 1px);
+    background-size:40px 40px;
+    animation:gridPan 4s linear infinite;
+  }
+  @keyframes gridPan{
+    0%{background-position:0 0;}
+    100%{background-position:40px 40px;}
+  }
+
+  /* Scanning line */
+  .intro-scan{
+    position:absolute; left:0; right:0; height:2px;
+    background:linear-gradient(90deg, transparent, var(--amber), var(--green), transparent);
+    opacity:0.7;
+    animation:scanLine 2.5s ease-in-out infinite;
+  }
+  @keyframes scanLine{
+    0%{top:-2px; opacity:0;}
+    10%{opacity:0.7;}
+    90%{opacity:0.7;}
+    100%{top:100%; opacity:0;}
+  }
+
+  /* Logo assembler */
+  .intro-logo{
+    position:relative; z-index:2;
+    display:flex; flex-direction:column; align-items:center; gap:20px;
+  }
+
+  /* Battery cell animation */
+  .battery-wrap{
+    width:80px; height:40px; position:relative;
+    border:3px solid var(--amber); border-radius:6px;
+    box-shadow:0 0 20px rgba(244,166,35,0.4);
+  }
+  .battery-wrap::after{
+    content:''; position:absolute; right:-10px; top:50%; transform:translateY(-50%);
+    width:7px; height:18px; background:var(--amber); border-radius:0 3px 3px 0;
+  }
+  .battery-fill{
+    height:100%; width:0%; border-radius:3px;
+    background:linear-gradient(90deg, var(--green), var(--amber));
+    animation:chargeBattery 1.8s cubic-bezier(.4,0,.2,1) forwards;
+    box-shadow:0 0 12px rgba(61,220,151,0.5) inset;
+  }
+  @keyframes chargeBattery{
+    0%{width:0%;}
+    20%{width:15%;}
+    50%{width:60%;}
+    80%{width:85%;}
+    100%{width:100%;}
+  }
+
+  /* Charging bolt */
+  .battery-bolt{
+    position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+    color:#0B0E11; font-size:1.3rem; font-weight:900;
+    opacity:0; animation:boltAppear 0.4s ease 1.6s forwards;
+    z-index:1;
+  }
+  @keyframes boltAppear{to{opacity:1;}}
+
+  /* Name text animation */
+  .intro-name{
+    font-family:var(--disp); font-size:clamp(1.4rem,5vw,2rem); font-weight:700;
+    letter-spacing:0.12em; text-transform:uppercase;
+    color:transparent;
+    background:linear-gradient(90deg, var(--amber) 0%, var(--green) 50%, var(--amber) 100%);
+    background-size:200% auto;
+    -webkit-background-clip:text; background-clip:text;
+    opacity:0; transform:translateY(12px);
+    animation:nameReveal 0.7s cubic-bezier(.2,.8,.3,1) 1.2s forwards, shimmer 3s linear 2s infinite;
+  }
+  @keyframes nameReveal{to{opacity:1; transform:translateY(0);}}
+  @keyframes shimmer{0%{background-position:0% center;}100%{background-position:200% center;}}
+
+  .intro-title{
+    font-family:var(--mono); font-size:0.8rem; color:var(--muted); letter-spacing:0.15em;
+    text-transform:uppercase; opacity:0;
+    animation:fadeUp 0.5s ease 1.8s forwards;
+  }
+  @keyframes fadeUp{to{opacity:1;}}
+
+  /* Typing cursor indicator */
+  .intro-status{
+    display:flex; align-items:center; gap:10px;
+    font-family:var(--mono); font-size:0.75rem; color:var(--green);
+    opacity:0; animation:fadeUp 0.5s ease 2.1s forwards;
+    margin-top:6px;
+  }
+  .intro-status-dot{
+    width:8px; height:8px; border-radius:50%; background:var(--green);
+    box-shadow:0 0 8px var(--green);
+    animation:statusPulse 0.8s ease-in-out infinite;
+  }
+  @keyframes statusPulse{0%,100%{opacity:1;}50%{opacity:0.2;}}
+
+  /* Corner decorations */
+  .intro-corner{
+    position:absolute; width:40px; height:40px;
+    border-color:var(--amber); border-style:solid; opacity:0.5;
+  }
+  .intro-corner.tl{top:24px; left:24px; border-width:2px 0 0 2px;}
+  .intro-corner.tr{top:24px; right:24px; border-width:2px 2px 0 0;}
+  .intro-corner.bl{bottom:24px; left:24px; border-width:0 0 2px 2px;}
+  .intro-corner.br{bottom:24px; right:24px; border-width:0 2px 2px 0;}
+
+  /* Particle dots */
+  .intro-particles{position:absolute; inset:0; overflow:hidden; pointer-events:none;}
+  .p-dot{
+    position:absolute; width:3px; height:3px; border-radius:50%;
+    background:var(--amber); opacity:0;
+    animation:floatDot var(--dur,3s) ease-in-out var(--delay,0s) infinite;
+  }
+  @keyframes floatDot{
+    0%{opacity:0; transform:translateY(0) scale(1);}
+    20%{opacity:0.6;}
+    80%{opacity:0.3;}
+    100%{opacity:0; transform:translateY(-80px) scale(0);}
+  }
+
+  /* ============================================================
+     PROGRESS BAR & NAV
+  ============================================================ */
   .conveyor{
     position:fixed; top:0; left:0; right:0; height:4px;
     background:var(--panel); z-index:1000;
@@ -100,6 +243,9 @@
   .hamburger{display:none; flex-direction:column; gap:5px; cursor:pointer; background:none; border:none; padding:6px;}
   .hamburger span{width:24px; height:2px; background:var(--text); border-radius:1px; transition:.25s;}
 
+  /* ============================================================
+     LAYOUT
+  ============================================================ */
   section{max-width:1240px; margin:0 auto; padding:120px 32px; position:relative;}
   .station{
     font-family:var(--mono); color:var(--amber); font-size:0.8rem;
@@ -114,6 +260,9 @@
   .reveal{opacity:0; transform:translateY(28px); transition:opacity .7s cubic-bezier(.2,.7,.3,1), transform .7s cubic-bezier(.2,.7,.3,1);}
   .reveal.visible{opacity:1; transform:translateY(0);}
 
+  /* ============================================================
+     HERO — DESKTOP
+  ============================================================ */
   .hero{min-height:100vh; display:flex; align-items:center; padding-top:140px; position:relative;}
   .hero-bg{
     position:absolute; inset:0; z-index:-1; overflow:hidden;
@@ -129,7 +278,18 @@
     background-size:48px 48px;
     mask-image:linear-gradient(to bottom, transparent, black 20%, black 80%, transparent);
   }
-  .hero-grid{display:grid; grid-template-columns:1.15fr 0.85fr; gap:64px; align-items:center; width:100%;}
+
+  /* Desktop: text left, photo right */
+  .hero-grid{
+    display:grid;
+    grid-template-columns:1.15fr 0.85fr;
+    gap:64px;
+    align-items:center;
+    width:100%;
+  }
+  .hero-text-col{ order:1; }
+  .hero-photo-col{ order:2; display:flex; justify-content:center; }
+
   .badge{
     display:inline-flex; align-items:center; gap:10px;
     font-family:var(--mono); font-size:0.78rem; color:var(--green);
@@ -161,7 +321,9 @@
   .btn-secondary{border-color:var(--line); color:var(--text); background:rgba(255,255,255,0.02);}
   .btn-secondary:hover{border-color:var(--amber); color:var(--amber); transform:translateY(-3px);}
 
-   /* FIXED PROFILE CARD WITH AMBER BORDER */
+  /* ============================================================
+     PROFILE CARD
+  ============================================================ */
   .profile-card-fixed{
     width:100%;
     max-width:360px;
@@ -216,6 +378,9 @@
     text-transform:uppercase;
   }
 
+  /* ============================================================
+     MODAL
+  ============================================================ */
   .modal-overlay{
     position:fixed; inset:0; background:rgba(11,14,17,0.75); backdrop-filter:blur(6px);
     z-index:1100; display:flex; align-items:center; justify-content:center;
@@ -244,6 +409,9 @@
   .modal-actions{display:flex; flex-direction:column; gap:14px;}
   .modal-actions .btn{justify-content:center; width:100%;}
 
+  /* ============================================================
+     STATS STRIP
+  ============================================================ */
   .stats-strip{
     display:grid; grid-template-columns:repeat(4,1fr); gap:1px;
     background:var(--line); border:1px solid var(--line); border-radius:10px;
@@ -256,6 +424,9 @@
   }
   .stat-box .lbl{font-size:0.8rem; color:var(--muted); letter-spacing:0.04em;}
 
+  /* ============================================================
+     ABOUT
+  ============================================================ */
   .about-grid{display:grid; grid-template-columns:1fr 1.3fr; gap:60px; align-items:start;}
   .about-card{background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:32px; transition:transform .3s, border-color .3s;}
   .about-card:hover{transform:translateY(-4px); border-color:rgba(244,166,35,0.25);}
@@ -273,6 +444,9 @@
   }
   .skill-tag:hover{border-color:var(--amber); color:var(--amber); transform:translateY(-2px);}
 
+  /* ============================================================
+     TIMELINE
+  ============================================================ */
   .timeline{position:relative; padding-left:48px;}
   .timeline::before{content:''; position:absolute; left:9px; top:8px; bottom:8px; width:2px; background:linear-gradient(180deg, var(--amber), var(--line) 90%);}
   .tl-item{position:relative; padding-bottom:56px;}
@@ -293,6 +467,9 @@
   .tl-list li{padding-left:22px; position:relative; font-size:0.94rem; color:#B6BFC8;}
   .tl-list li::before{content:'▸'; position:absolute; left:0; color:var(--green); font-size:0.8rem; top:2px;}
 
+  /* ============================================================
+     SKILLS
+  ============================================================ */
   .skills-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:20px;}
   .skill-card{background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:26px; transition:all .3s;}
   .skill-card:hover{border-color:rgba(244,166,35,0.3); box-shadow:0 12px 30px -16px rgba(244,166,35,0.3); transform:translateY(-4px);}
@@ -303,6 +480,9 @@
   .gauge-fill{height:100%; border-radius:3px; background:linear-gradient(90deg,var(--green),var(--amber)); width:0%; transition:width 1.4s cubic-bezier(.2,.8,.3,1);}
   .skill-card.visible .gauge-fill{width:var(--pct);}
 
+  /* ============================================================
+     ACHIEVEMENTS
+  ============================================================ */
   .ach-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:20px;}
   .ach-card{
     background:linear-gradient(160deg, var(--panel), var(--panel-2));
@@ -324,12 +504,18 @@
   .ach-card h3{font-family:var(--disp); font-size:1.05rem; margin-bottom:10px; font-weight:600;}
   .ach-card p{color:var(--muted); font-size:0.92rem;}
 
+  /* ============================================================
+     CERTIFICATIONS
+  ============================================================ */
   .cert-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:16px;}
   .cert-card{background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:22px; display:flex; flex-direction:column; gap:6px; transition:.3s;}
   .cert-card:hover{border-color:var(--green); box-shadow:0 0 0 1px var(--green) inset;}
   .cert-card .cert-name{font-family:var(--disp); font-weight:600; font-size:0.98rem;}
   .cert-card .cert-date{font-family:var(--mono); font-size:0.78rem; color:var(--green);}
 
+  /* ============================================================
+     EDUCATION & LANGUAGES
+  ============================================================ */
   .edu-lang-grid{display:grid; grid-template-columns:1.4fr 1fr; gap:32px;}
   .edu-item{border-left:2px solid var(--line); padding:4px 0 22px 20px; position:relative;}
   .edu-item::before{content:''; position:absolute; left:-5px; top:4px; width:8px; height:8px; border-radius:50%; background:var(--amber);}
@@ -340,7 +526,9 @@
   .lang-list{display:flex; flex-wrap:wrap; gap:12px; margin-top:6px;}
   .lang-chip{font-family:var(--mono); font-size:0.85rem; padding:10px 16px; border-radius:6px; background:var(--panel-2); border:1px solid var(--line); color:#B6BFC8;}
 
-  /* ===== GALLERY (3 PHOTO CARDS) ===== */
+  /* ============================================================
+     GALLERY
+  ============================================================ */
   .gallery-grid{
     display:grid;
     grid-template-columns:repeat(3, 1fr);
@@ -348,7 +536,7 @@
   }
   .gallery-card{
     width:100%;
-    aspect-ratio:1 / 1;          /* keeps all 3 cards perfectly square & identical */
+    aspect-ratio:1 / 1;
     border-radius:12px;
     overflow:hidden;
     border:1px solid var(--line);
@@ -360,14 +548,14 @@
   .gallery-card img{
     width:100%;
     height:100%;
-    object-fit:cover;           /* fills the card, crops excess */
-    object-position:center;     /* change to 'center top' if faces get cropped */
+    object-fit:cover;
+    object-position:center;
     display:block;
   }
-  @media (max-width:760px){
-    .gallery-grid{grid-template-columns:1fr; gap:16px;}
-  }
 
+  /* ============================================================
+     CONTACT
+  ============================================================ */
   .contact-grid{display:grid; grid-template-columns:1fr 1.2fr; gap:60px; align-items:start;}
   .contact-info-item{display:flex; align-items:center; gap:16px; margin-bottom:24px;}
   .contact-icon{
@@ -393,9 +581,10 @@
   .field textarea:focus + label, .field textarea:not(:placeholder-shown) + label{
     top:-9px; font-size:0.74rem; color:var(--amber);
   }
-  .form-msg{margin-top:16px; font-family:var(--mono); font-size:0.85rem; color:var(--green); opacity:0; transition:opacity .4s; display:flex; align-items:center; gap:8px;}
-  .form-msg.show{opacity:1;}
 
+  /* ============================================================
+     FOOTER
+  ============================================================ */
   footer{
     border-top:1px solid var(--line); padding:48px 32px;
     display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:20px;
@@ -417,12 +606,17 @@
   }
   .to-top:hover{border-color:var(--amber); transform:translateY(-3px);}
 
-    @media (max-width:980px){
-    .hero-grid{grid-template-columns:1fr; gap:48px;}
+  /* ============================================================
+     RESPONSIVE
+  ============================================================ */
+  @media (max-width:980px){
     .stats-strip{grid-template-columns:repeat(2,1fr);}
     .about-grid, .contact-grid, .edu-lang-grid{grid-template-columns:1fr; gap:32px;}
   }
-    @media (max-width:760px){
+
+  /* ---- HERO MOBILE FIX ---- */
+  @media (max-width:760px){
+    /* Nav mobile */
     .nav-links{
       position:absolute; top:100%; left:0; right:0; flex-direction:column;
       background:rgba(11,14,17,0.97); backdrop-filter:blur(20px);
@@ -432,21 +626,113 @@
     .nav-links.open{transform:translateY(0); opacity:1; pointer-events:all;}
     .hamburger{display:flex;}
     .nav-cta{display:none;}
+
     section{padding:80px 22px;}
+
+    /* Hero: single column, photo FIRST then text */
+    .hero{padding-top:100px; min-height:auto;}
+    .hero-grid{
+      grid-template-columns:1fr;
+      gap:36px;
+    }
+    .hero-photo-col{
+      order:1;           /* PHOTO comes first on mobile */
+      display:flex;
+      justify-content:center;
+      width:100%;
+    }
+    .hero-text-col{
+      order:2;           /* TEXT comes second on mobile */
+      text-align:center;
+    }
+
+    /* Shrink photo card on mobile */
+    .profile-card-fixed{
+      max-width:220px;
+      border-radius:20px;
+    }
+    .profile-caption .name-tag{ font-size:1rem; }
+    .profile-caption .title-tag{ font-size:0.68rem; }
+
+    /* Centre-align hero text content */
+    .hero h1{ font-size:clamp(2rem,8vw,2.8rem); }
+    .hero .role{ font-size:0.88rem; }
+    .hero p.intro{ font-size:0.95rem; margin:0 auto 32px; max-width:100%; }
+    .hero-ctas{ justify-content:center; }
+    .badge{ font-size:0.72rem; padding:6px 12px; }
+
+    /* Stats 2-col */
     .stats-strip{grid-template-columns:repeat(2,1fr);}
-    .profile-card-fixed{max-width:260px;}
+
+    /* Gallery 1-col */
+    .gallery-grid{grid-template-columns:1fr; gap:16px;}
+
+    /* Timeline */
+    .timeline{padding-left:32px;}
+    .tl-dot{left:-32px;}
+    .timeline::before{left:6px;}
+    .tl-card{ padding:20px 18px; }
+    .tl-role{ font-size:1.05rem; }
+  }
+
+  @media (max-width:480px){
+    .hero-grid{ gap:28px; }
+    .profile-card-fixed{ max-width:190px; }
+    .hero h1{ font-size:clamp(1.8rem,7vw,2.4rem); }
+    .hero .role .sep{ margin:0 4px; }
+    .btn{ padding:12px 22px; font-size:0.88rem; }
+    .stats-strip{ grid-template-columns:1fr 1fr; }
+    .stat-box{ padding:20px 14px; }
   }
 
   @media (prefers-reduced-motion: reduce){
     *{animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important;}
+    #intro-overlay{display:none !important;}
   }
   :focus-visible{outline:2px solid var(--amber); outline-offset:3px;}
 </style>
 </head>
 <body>
 
+<!-- ============================================================
+     INTRO ANIMATION OVERLAY
+============================================================ -->
+<div id="intro-overlay" role="presentation" aria-hidden="true">
+  <div class="intro-grid"></div>
+  <div class="intro-scan"></div>
+  <div class="intro-particles" id="introParticles"></div>
+
+  <!-- Corner brackets -->
+  <div class="intro-corner tl"></div>
+  <div class="intro-corner tr"></div>
+  <div class="intro-corner bl"></div>
+  <div class="intro-corner br"></div>
+
+  <div class="intro-logo">
+    <!-- Animated battery -->
+    <div class="battery-wrap">
+      <div class="battery-fill"></div>
+      <div class="battery-bolt">⚡</div>
+    </div>
+
+    <!-- Name -->
+    <div class="intro-name">Binoj Chathampuriydam</div>
+    <div class="intro-title">Senior Officer · Battery Assembly</div>
+    <div class="intro-status">
+      <div class="intro-status-dot"></div>
+      INITIALISING PORTFOLIO
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     PROGRESS BAR
+============================================================ -->
 <div class="conveyor"><div class="conveyor-fill" id="conveyorFill"><div class="conveyor-cell">⚡</div></div></div>
 
+<!-- ============================================================
+     NAV
+============================================================ -->
 <nav>
   <div class="nav-inner">
     <div class="logo"><span class="logo-mark"></span> Binoj C.</div>
@@ -462,21 +748,15 @@
   </div>
 </nav>
 
-<!-- HERO -->
+<!-- ============================================================
+     HERO
+============================================================ -->
 <section class="hero" id="home">
   <div class="hero-bg"><div class="grid-lines"></div></div>
   <div class="hero-grid">
-    <div>
-      <div class="badge"><span class="dot"></span> AVAILABLE FOR NEW OPPORTUNITIES</div>
-      <h1 class="reveal">Hi, I'm <span class="accent">Binoj</span><br>Chathampuriydam</h1>
-      <div class="role reveal">Senior Officer <span class="sep">/</span> Battery Assembly <span class="sep">/</span> Six Sigma Green Belt</div>
-      <p class="intro reveal">Production engineer with 6+ years driving battery assembly lines from plate preparation to final pack — improving uptime, cutting scrap, and holding quality systems to IATF 16949 standard across high-volume automotive battery plants.</p>
-      <div class="hero-ctas reveal">
-        <a href="#experience" class="btn btn-primary">View Experience</a>
-        <button class="btn btn-secondary" id="resumeBtn" type="button">Resume Details</button>
-      </div>
-    </div>
-        <div class="reveal" style="display: flex; justify-content: center;">
+
+    <!-- PHOTO COL — order:1 on mobile (comes first) -->
+    <div class="hero-photo-col reveal">
       <div class="profile-card-fixed">
         <div class="profile-img-container">
           <img src="binoj.jpg" alt="Binoj Chathampuriydam profile">
@@ -487,10 +767,25 @@
         </div>
       </div>
     </div>
+
+    <!-- TEXT COL — order:2 on mobile (comes second) -->
+    <div class="hero-text-col">
+      <div class="badge"><span class="dot"></span> AVAILABLE FOR NEW OPPORTUNITIES</div>
+      <h1 class="reveal">Hi, I'm <span class="accent">Binoj</span><br>Chathampuriydam</h1>
+      <div class="role reveal">Senior Officer <span class="sep">/</span> Battery Assembly <span class="sep">/</span> Six Sigma Green Belt</div>
+      <p class="intro reveal">Production engineer with 6+ years driving battery assembly lines from plate preparation to final pack — improving uptime, cutting scrap, and holding quality systems to IATF 16949 standard across high-volume automotive battery plants.</p>
+      <div class="hero-ctas reveal">
+        <a href="#experience" class="btn btn-primary">View Experience</a>
+        <button class="btn btn-secondary" id="resumeBtn" type="button">Resume Details</button>
+      </div>
+    </div>
+
   </div>
 </section>
 
-<!-- STATS STRIP -->
+<!-- ============================================================
+     STATS STRIP
+============================================================ -->
 <section style="padding-top:0;">
   <div class="stats-strip reveal">
     <div class="stat-box"><span class="num">6+</span><span class="lbl">Years in Production</span></div>
@@ -500,7 +795,9 @@
   </div>
 </section>
 
-<!-- ABOUT -->
+<!-- ============================================================
+     ABOUT
+============================================================ -->
 <section id="about">
   <div class="station">ST-01 / PROFILE</div>
   <h2 class="section-title reveal">About</h2>
@@ -511,10 +808,6 @@
       <div class="id-row"><span class="id-key">LOCATION</span><span class="id-val">Kottayam, Kerala 686521</span></div>
       <div class="id-row"><span class="id-key">PHONE</span><span class="id-val">+91 79023 29593</span></div>
       <div class="id-row"><span class="id-key">EMAIL</span><span class="id-val">binoj50@gmail.com</span></div>
-<<<<<<< HEAD
-      
-=======
->>>>>>> 11e76311b97e7c727a8508af5ac34c9ab45d23d1
     </div>
     <div class="about-card reveal">
       <p>I'm a dynamic production professional with extensive experience leading battery assembly operations — from plate preparation through final assembly — across India's largest energy and mobility manufacturers.</p>
@@ -535,7 +828,9 @@
   </div>
 </section>
 
-<!-- EXPERIENCE -->
+<!-- ============================================================
+     EXPERIENCE
+============================================================ -->
 <section id="experience">
   <div class="station">ST-02 / TIMELINE</div>
   <h2 class="section-title reveal">Experience</h2>
@@ -577,7 +872,9 @@
   </div>
 </section>
 
-<!-- SKILLS -->
+<!-- ============================================================
+     SKILLS
+============================================================ -->
 <section id="skills">
   <div class="station">ST-03 / CAPABILITIES</div>
   <h2 class="section-title reveal">Skills</h2>
@@ -617,8 +914,9 @@
   </div>
 </section>
 
-
-<!-- ACHIEVEMENTS -->
+<!-- ============================================================
+     ACHIEVEMENTS
+============================================================ -->
 <section id="achievements">
   <div class="station">ST-05 / RESULTS</div>
   <h2 class="section-title reveal">Achievements</h2>
@@ -656,7 +954,9 @@
   </div>
 </section>
 
-<!-- CERTIFICATIONS -->
+<!-- ============================================================
+     CERTIFICATIONS
+============================================================ -->
 <section id="certifications" style="padding-top:0;">
   <div class="station">ST-06 / CERTIFICATIONS</div>
   <h2 class="section-title reveal">Certifications</h2>
@@ -668,7 +968,9 @@
   </div>
 </section>
 
-<!-- EDUCATION + LANGUAGES -->
+<!-- ============================================================
+     EDUCATION + LANGUAGES
+============================================================ -->
 <section id="education">
   <div class="station">ST-07 / EDUCATION & LANGUAGES</div>
   <h2 class="section-title reveal">Background</h2>
@@ -703,7 +1005,9 @@
   </div>
 </section>
 
-<!-- CONTACT -->
+<!-- ============================================================
+     CONTACT
+============================================================ -->
 <section id="contact">
   <div class="station">ST-08 / CONTACT</div>
   <h2 class="section-title reveal">Get In Touch</h2>
@@ -723,55 +1027,43 @@
         <div><span class="lbl">LOCATION</span><span>Kottayam, Kerala 686521, India</span></div>
       </div>
     </div>
-    
-  
-    
+
     <!-- Formspree AJAX Form -->
     <div class="form-card reveal">
-      <!-- Success Message Container -->
       <div data-fs-success style="display:none; background: rgba(61,220,151,0.1); border: 1px solid var(--green); border-radius: 8px; padding: 12px; margin-bottom: 20px; text-align: center; color: var(--green);">
         ✓ Message sent successfully! I'll get back to you soon.
       </div>
-      
-      <!-- Error Message Container -->
       <div data-fs-error style="display:none; background: rgba(244,166,35,0.1); border: 1px solid var(--amber); border-radius: 8px; padding: 12px; margin-bottom: 20px; text-align: center; color: var(--amber);">
         ❌ Something went wrong. Please try again or email directly.
       </div>
-      
+
       <form id="contact-form">
         <div class="field">
           <input type="text" id="cname" name="name" data-fs-field placeholder=" " required />
           <label for="cname">Your Name</label>
-          <span data-fs-error="name" style="font-size: 0.75rem; color: var(--amber); display: block; margin-top: 5px;"></span>
         </div>
-        
         <div class="field">
           <input type="email" id="cemail" name="email" data-fs-field placeholder=" " required />
           <label for="cemail">Your Email</label>
-          <span data-fs-error="email" style="font-size: 0.75rem; color: var(--amber); display: block; margin-top: 5px;"></span>
         </div>
-        
         <div class="field">
           <input type="text" id="csubject" name="subject" data-fs-field placeholder=" " required />
           <label for="csubject">Subject</label>
-          <span data-fs-error="subject" style="font-size: 0.75rem; color: var(--amber); display: block; margin-top: 5px;"></span>
         </div>
-        
         <div class="field">
           <textarea id="cmessage" name="message" data-fs-field rows="4" placeholder=" " required></textarea>
           <label for="cmessage">Message</label>
-          <span data-fs-error="message" style="font-size: 0.75rem; color: var(--amber); display: block; margin-top: 5px;"></span>
         </div>
-        
-        <!-- Custom message display area -->
-        <div id="formMsg" style="margin-top: 16px; font-family: var(--mono); font-size: 0.85rem; opacity: 0; transition: opacity 0.4s; text-align: center;"></div>
-        
-        <button type="submit" data-fs-submit-btn class="btn btn-primary" style="width:100%; justify-content:center; margin-top: 10px;">Send Message</button>
+        <div id="formMsg" style="margin-top:16px; font-family:var(--mono); font-size:0.85rem; opacity:0; transition:opacity 0.4s; text-align:center;"></div>
+        <button type="submit" data-fs-submit-btn class="btn btn-primary" style="width:100%; justify-content:center; margin-top:10px;">Send Message</button>
       </form>
     </div>
   </div>
 </section>
 
+<!-- ============================================================
+     FOOTER
+============================================================ -->
 <footer>
   <div>© 2026 Binoj Chathampuriydam. All rights reserved.</div>
   <ul class="footer-links">
@@ -800,96 +1092,92 @@
   </div>
 </div>
 
+<!-- ============================================================
+     SCRIPTS
+============================================================ -->
 <script>
+  /* ---------- INTRO ANIMATION ---------- */
+  (function(){
+    const overlay = document.getElementById('intro-overlay');
+
+    /* Spawn floating particle dots */
+    const particlesEl = document.getElementById('introParticles');
+    const POSITIONS = [
+      [15,80],[30,45],[55,20],[70,60],[85,35],[10,55],[45,85],[90,15],[25,70],[65,40],[50,65],[80,90]
+    ];
+    POSITIONS.forEach((pos, i) => {
+      const d = document.createElement('div');
+      d.className = 'p-dot';
+      d.style.cssText = `left:${pos[0]}%;top:${pos[1]}%;--dur:${2.5+Math.random()*2}s;--delay:${0.3+i*0.18}s;`;
+      particlesEl.appendChild(d);
+    });
+
+    /* Hide overlay after animation completes */
+    const TOTAL_DURATION = 3000; /* ms — covers all animation stages */
+    setTimeout(() => {
+      overlay.classList.add('hidden');
+      /* Remove from DOM after fade-out transition (600ms) */
+      setTimeout(() => { if(overlay.parentNode) overlay.parentNode.removeChild(overlay); }, 700);
+    }, TOTAL_DURATION);
+  })();
+
+  /* ---------- SCROLL PROGRESS ---------- */
   const fill = document.getElementById('conveyorFill');
   function updateProgress(){
     const h = document.documentElement;
     const pct = (h.scrollTop) / (h.scrollHeight - h.clientHeight) * 100;
     fill.style.width = pct + '%';
   }
-  window.addEventListener('scroll', updateProgress);
+  window.addEventListener('scroll', updateProgress, {passive:true});
   updateProgress();
 
+  /* ---------- SCROLL REVEAL ---------- */
   const revealEls = document.querySelectorAll('.reveal');
   const io = new IntersectionObserver((entries)=>{
     entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('visible'); } });
-  }, {threshold:0.15});
+  }, {threshold:0.12});
   revealEls.forEach(el=>io.observe(el));
 
+  /* ---------- HAMBURGER ---------- */
   const hamburger = document.getElementById('hamburger');
-  const navLinks = document.getElementById('navLinks');
+  const navLinks  = document.getElementById('navLinks');
   hamburger.addEventListener('click', ()=>{ navLinks.classList.toggle('open'); });
   navLinks.querySelectorAll('a').forEach(a=>a.addEventListener('click', ()=>navLinks.classList.remove('open')));
 
+  /* ---------- BACK TO TOP ---------- */
   document.getElementById('toTop').addEventListener('click', ()=>{
     window.scrollTo({top:0, behavior:'smooth'});
   });
 
+  /* ---------- RESUME MODAL ---------- */
   const resumeModal = document.getElementById('resumeModal');
   document.getElementById('resumeBtn').addEventListener('click', ()=> resumeModal.classList.add('open'));
   document.getElementById('modalClose').addEventListener('click', ()=> resumeModal.classList.remove('open'));
   resumeModal.addEventListener('click', (e)=>{ if(e.target === resumeModal) resumeModal.classList.remove('open'); });
   document.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') resumeModal.classList.remove('open'); });
 
-  // Formspree AJAX Integration with custom success/error handling
-  window.formspree = window.formspree || function () { (formspree.q = formspree.q || []).push(arguments); };
-  
-  formspree('initForm', { 
-    formElement: '#contact-form', 
+  /* ---------- FORMSPREE AJAX ---------- */
+  window.formspree = window.formspree || function(){ (formspree.q = formspree.q || []).push(arguments); };
+  formspree('initForm', {
+    formElement: '#contact-form',
     formId: 'mojzprnz',
-    onSuccess: function() {
-      // Show success message
-      const successDiv = document.querySelector('[data-fs-success]');
-      if (successDiv) {
-        successDiv.style.display = 'block';
-        setTimeout(() => {
-          successDiv.style.display = 'none';
-        }, 5000);
-      }
-      
-      // Clear all form fields
+    onSuccess: function(){
+      const s = document.querySelector('[data-fs-success]');
+      if(s){ s.style.display='block'; setTimeout(()=>s.style.display='none',5000); }
       const form = document.getElementById('contact-form');
-      if (form) {
-        form.reset();
-      }
-      
-      // Show custom message
-      const formMsg = document.getElementById('formMsg');
-      if (formMsg) {
-        formMsg.textContent = '✓ Message sent successfully! I\'ll get back to you soon.';
-        formMsg.style.color = '#3DDC97';
-        formMsg.style.opacity = '1';
-        setTimeout(() => {
-          formMsg.style.opacity = '0';
-        }, 5000);
-      }
+      if(form) form.reset();
+      const msg = document.getElementById('formMsg');
+      if(msg){ msg.textContent="✓ Message sent! I'll get back to you soon."; msg.style.color='#3DDC97'; msg.style.opacity='1'; setTimeout(()=>msg.style.opacity='0',5000); }
     },
-    onError: function(error) {
-      // Show error message
-      const errorDiv = document.querySelector('[data-fs-error]');
-      if (errorDiv) {
-        errorDiv.style.display = 'block';
-        setTimeout(() => {
-          errorDiv.style.display = 'none';
-        }, 5000);
-      }
-      
-      // Show custom error message
-      const formMsg = document.getElementById('formMsg');
-      if (formMsg) {
-        formMsg.textContent = '❌ Failed to send. Please email directly: binoj50@gmail.com';
-        formMsg.style.color = '#F4A623';
-        formMsg.style.opacity = '1';
-        setTimeout(() => {
-          formMsg.style.opacity = '0';
-        }, 5000);
-      }
-      console.error('Formspree error:', error);
+    onError: function(err){
+      const e = document.querySelector('[data-fs-error]');
+      if(e){ e.style.display='block'; setTimeout(()=>e.style.display='none',5000); }
+      const msg = document.getElementById('formMsg');
+      if(msg){ msg.textContent='❌ Failed to send. Please email: binoj50@gmail.com'; msg.style.color='#F4A623'; msg.style.opacity='1'; setTimeout(()=>msg.style.opacity='0',5000); }
+      console.error('Formspree error:',err);
     }
   });
 </script>
-
-<!-- Formspree AJAX Library -->
 <script src="https://unpkg.com/@formspree/ajax@1" defer></script>
 </body>
 </html>
